@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Email Your Hours -- Log your work hours and send email to your supervisor.</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+</head>
+
+<body>
+<!--Head Navbar-->
+<nav class="navbar navbar-default">
+  <a class="navbar-brand" href="#"><b>Email Your Hours</b></a>
+  <ul class="nav navbar-nav">
+    <li class="nav-item active">
+      <a class="nav-link" href="#">Home<span class="sr-only">(current)</span></a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">About</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">Contact</a>
+    </li>
+  </ul>
+</nav>
+
+<div class="container">
+  <div class="row">
+    <!--Log time panel-->
+    <div class="col-xs-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Log Your Hours</h3>
+        </div>
+        <div class="panel-body">
+          <form class="form-inline" action="index.html" method="post">
+            <div class="form-group">
+              <label for="startTime">Start</label>
+              <input type="number" class="form-control" name="Start Time" min="1" max="12">
+              <select class="form-control" name="AM/PM">
+                <option value="0">AM</option>
+                <option value="0.5">PM</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="endTime">End</label>
+              <input type="number" class="form-control" name="End Time" min="1" max="12">
+              <select class="form-control" name="AM/PM">
+                <option value="0">AM</option>
+                <option value="0.5">PM</option>
+              </select>
+            </div>
+          </form>
+          <br>
+          <form class="form-inline" action="index.html" method="post">
+            <div class="form-group">
+              <label for="Date">Date</label>
+              <select id="weekdayApp" class="form-control" name="weekdays">
+                <option v-for="weekday in weekdays">{{ weekday.text }}</option>
+              </select>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!--Time slot view panel-->
+    <div class="col-xs-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Log Your Hours</h3>
+        </div>
+        <div class="panel-body">
+          Panel content
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Vue.js support-->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="../EmailHoursWebApp/main.js"></script>
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</body>
+</html>
