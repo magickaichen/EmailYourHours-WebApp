@@ -31,32 +31,28 @@
   <h1 class="display-3">Log Your Hours</h1>
   <hr class="my-1">
   <form class="form-inline" action="index.html" method="post">
-    <div class="form-group">
-      <label for="Date" class="lead"><b>Date</b></label>
-      <select ref="weekdaySel" class="form-control lead" name="weekdays">
-        <option v-for="weekday in weekdays" class="lead" v-bind:value="weekday.text">
+    <div class="form-group" :class="{'has-danger': !validation.day || !validation.validDay}">
+      <label class="form-control-label" for="Date" class="lead"><b>Date</b></label>
+      <select v-model="day" class="form-control lead" name="weekdays">
+        <option v-for="weekday in weekdays" class="lead">
           {{ weekday.text }}
         </option>
       </select>
+      <div class="form-control-feedback" v-show="!validation.day">Select a day.</div>
+      <div class="form-control-feedback" v-show="!validation.validDay">Selected day already has an entry.</div>
     </div>
   </form>
   <br>
   <div class="row">
-    <div class="form-group col-sm-6 lead">
-      <label for="startTime"><b>Start</b></label>
-      <input id="startTime" type="number" class="form-control" name="Start Time" min="1" max="12">
-      <select id="stam" class="form-control" name="AM/PM">
-        <option value="AM" class="lead">AM</option>
-        <option value="PM" class="lead">PM</option>
-      </select>
+    <div class="form-group col-sm-6 lead" :class="{'has-danger': !validation.startTime}">
+      <label class="form-control-label" for="startTime"><b>Start</b></label>
+      <input v-model="startTime" type="time" class="form-control lead" name="Start Time">
+      <div class="form-control-feedback" v-show="!validation.startTime">Enter a valid time.</div>
     </div>
-    <div class="form-group col-sm-6 lead">
-      <label for="endTime"><b>End</b></label>
-      <input id="endTime" type="number" class="form-control lead" name="End Time" min="1" max="12">
-      <select id="edam" class="form-control" name="AM/PM">
-        <option value="AM" class="lead">AM</option>
-        <option value="PM" class="lead">PM</option>
-      </select>
+    <div class="form-group col-sm-6 lead" :class="{'has-danger': !validation.endTime}">
+      <label class="form-control-label" for="endTime"><b>End</b></label>
+      <input v-model="endTime" type="time" class="form-control lead" name="End Time">
+      <div class="form-control-feedback" v-show="!validation.endTime">Enter a valid time.</div>
     </div>
   </div>
   <button v-on:click="addTimeSlot" type="submit" name="submitButton" class="btn btn-success">
@@ -65,7 +61,7 @@
   <br><br>
   <ul class="list-group">
     <li v-for="timeSlot in timeSlots" class="lead list-group-item">
-      <h5 class="list-group-item-heading">{{timeSlot.day}}</h5>
+      <h4 class="list-group-item-heading">{{timeSlot.day}}</h4>
       <p class="list-group-item-text">Start: {{timeSlot.start}}</p>
       <p class="list-group-item-text">End: {{timeSlot.end}}</p>
     </li>
