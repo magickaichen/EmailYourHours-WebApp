@@ -1,6 +1,7 @@
-var weekdayApp = new Vue({
-  el: '#weekdayApp',
+var timeListApp = new Vue({
+  el: '#timeListApp',
   data: {
+    timeSlots: [],
     weekdays:[
       { text: 'Monday' },
       { text: 'Tuesday' },
@@ -9,6 +10,16 @@ var weekdayApp = new Vue({
       { text: 'Friday' },
       { text: 'Saturday' },
       { text: 'Sunday' },
-    ]
-  }
+    ],
+  },
+  methods: {
+    addTimeSlot: function() {
+      var time = {
+        day: this.$refs.weekdaySel.value,
+        start: '10AM',
+        end: '5PM'
+      };
+      this.timeSlots.push(time);
+    },
+  },
 })
