@@ -1,10 +1,24 @@
+// Initialize Firebase
+var config = {
+  apiKey: "AIzaSyBl8Q9h72mpFpXSquNgq9jZeazJCHymIAM",
+  authDomain: "timelogdb.firebaseapp.com",
+  databaseURL: "https://timelogdb.firebaseio.com",
+  storageBucket: "",
+  messagingSenderId: "936502477061"
+}
+firebase.initializeApp(config)
+
+var timeRef = firebase.database().ref('timeSlots')
+
 var timeListApp = new Vue({
   el: '#timeListApp',
   data: {
-    timeSlots: [],
-    day: '',
-    startTime: '',
-    endTime: '',
+    time: {
+      day: '',
+      startTime: '',
+      endTime: '',
+      totalHours: '',
+    },
     weekdays:[
       { text: 'Monday' },
       { text: 'Tuesday' },
@@ -16,15 +30,19 @@ var timeListApp = new Vue({
     ],
   },
 
+  firebase: {
+    timeSlots: timeRef,
+  },
+
   computed:{
     // Check the validation of attributes in each time entry
     validation: function() {
       return {
-        startTime: !!this.startTime.trim(),
-        endTime: !!this.endTime.trim(),
-        day: !!this.day,
+        startTime: !!this.time.startTime.trim(),
+        endTime: !!this.time.endTime.trim(),
+        day: !!this.time.day,
         validTime: (this.calcTimeDiff() > 0),
-        validDay: !(this.checkDuplicate(this.day)),
+        validDay: !(this.checkDuplicate(this.time.day)),
       }
     },
     // Iterate though all checkpoints and returns a boolean (valid or invalid)
@@ -41,24 +59,20 @@ var timeListApp = new Vue({
   methods: {
     // Append time entry to array
     addTimeSlot: function() {
-      var time = {
-        day: this.day,
-        start: this.startTime,
-        end: this.endTime,
-        totalHours: this.calcTimeDiff(),
-      };
+      console.log(this.timeSlots.length);
       if (this.isValid) {
-        this.timeSlots.push(time);
+        this.calcTimeDiff();
+        timeRef.push(this.time);
       }
-      this.calcTimeDiff();
     },
     // Calculate total work time
     calcTimeDiff: function() {
-      var startTimeStamp = this.startTime.split(':');
-      var endTimeStamp = this.endTime.split(':')
+      var startTimeStamp = this.time.startTime.split(':');
+      var endTimeStamp = this.time.endTime.split(':')
       var startTimeInMins = parseInt(startTimeStamp[1]) + startTimeStamp[0] * 60;
       var endTimeinMins = parseInt(endTimeStamp[1]) + endTimeStamp[0] * 60;
       var totalHours = +((endTimeinMins - startTimeInMins) / 60).toFixed(1);
+      this.time.totalHours = totalHours;
 
       return (totalHours);
     },
@@ -70,6 +84,10 @@ var timeListApp = new Vue({
         }
       }
       return false;
-    }
+    },
+    // Delete time entry from database
+    deleteTimeSlot: function(timeSlot) {
+      timeRef.child(timeSlot['.key']).remove();
+    },
   },
 })

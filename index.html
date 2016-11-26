@@ -4,6 +4,12 @@
   <title>Email Your Hours -- Log your work hours and send email to your supervisor.</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Firebase Support -->
+  <script src="https://www.gstatic.com/firebasejs/3.6.1/firebase.js"></script>
+  <!-- Vue.js support -->
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <!-- VueFire Support -->
+  <script src="https://unpkg.com/vuefire/dist/vuefire.js"></script>
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css" integrity="sha384-AysaV+vQoT3kOAXZkl02PThvDr8HYKPZhNT5h/CXfBThSRXQ6jW5DO2ekP5ViFdi" crossorigin="anonymous">
 </head>
@@ -31,7 +37,7 @@
   <form class="form-inline" action="index.html" method="post">
     <div class="form-group" :class="{'has-danger': !validation.day || !validation.validDay}">
       <label class="form-control-label" for="Date" class="lead"><b>Date</b></label>
-      <select v-model="day" class="form-control lead" name="weekdays">
+      <select v-model="time.day" class="form-control lead" name="weekdays">
         <option v-for="weekday in weekdays" class="lead">
           {{ weekday.text }}
         </option>
@@ -48,14 +54,14 @@
   <div class="row">
     <div class="form-group col-sm-6" :class="{'has-danger': !validation.startTime}">
       <label class="form-control-label" for="startTime"><b>Start</b></label>
-      <input v-model="startTime" type="time" class="form-control lead" name="Start Time">
+      <input v-model="time.startTime" type="time" class="form-control lead" name="Start Time">
       <div class="form-control-feedback" v-show="!validation.startTime">
         Enter a valid time.
       </div>
     </div>
     <div class="form-group col-sm-6" :class="{'has-danger': !validation.endTime}">
       <label class="form-control-label" for="endTime"><b>End</b></label>
-      <input v-model="endTime" type="time" class="form-control lead" name="End Time">
+      <input v-model="time.endTime" type="time" class="form-control lead" name="End Time">
       <div class="form-control-feedback" v-show="!validation.endTime">
         Enter a valid time.
       </div>
@@ -78,19 +84,20 @@
     <tbody>
       <tr v-for="timeSlot in timeSlots">
         <th scope="row">{{timeSlot.day}}</th>
-        <td>{{timeSlot.start}}</td>
-        <td>{{timeSlot.end}}</td>
+        <td>{{timeSlot.startTime}}</td>
+        <td>{{timeSlot.endTime}}</td>
         <td>{{timeSlot.totalHours}} Hours</td>
-        <td><button type="button" name="delete" class="btn btn-danger btn-sm">Detele</button></td>
+        <td><button v-on:click="deleteTimeSlot(timeSlot)" type="button" name="delete" class="btn btn-danger btn-sm">Detele</button></td>
       </tr>
     </tbody>
-</table>
+  </table>
 </div>
 
-<!--Vue.js support-->
-<script src="https://unpkg.com/vue/dist/vue.js"></script>
-<script src="../EmailHoursWebApp/main.js"></script>
+<!-- App JavaScript -->
+<script src="js/main.js"></script>
+<!-- JQuery Support -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" integrity="sha384-3ceskX3iaEnIogmQchP8opvBy3Mi7Ce34nWjpBIwVTHfGYWQS9jwHDVRnpKKHJg7" crossorigin="anonymous"></script>
+<!-- Bootstrap Main JavaScript Support -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.3.7/js/tether.min.js" integrity="sha384-XTs3FgkjiBgo8qjEjBk0tGmf3wPrWtA6coPfQDfFEY8AnYJwjalXCiosYRBIBZX8" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/js/bootstrap.min.js" integrity="sha384-BLiI7JTZm+JWlgKa0M0kGRpJbF2J8q+qreVrKBC47e3K6BW78kGLrCkeRX6I9RoK" crossorigin="anonymous"></script>
 </body>
