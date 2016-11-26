@@ -39,17 +39,20 @@ var timeListApp = new Vue({
   },
 
   methods: {
+    // Append time entry to array
     addTimeSlot: function() {
       var time = {
         day: this.day,
         start: this.startTime,
         end: this.endTime,
+        totalHours: this.calcTimeDiff(),
       };
       if (this.isValid) {
         this.timeSlots.push(time);
       }
       this.calcTimeDiff();
     },
+    // Calculate total work time
     calcTimeDiff: function() {
       var startTimeStamp = this.startTime.split(':');
       var endTimeStamp = this.endTime.split(':')
@@ -57,9 +60,9 @@ var timeListApp = new Vue({
       var endTimeinMins = parseInt(endTimeStamp[1]) + endTimeStamp[0] * 60;
       var totalHours = +((endTimeinMins - startTimeInMins) / 60).toFixed(1);
 
-      console.log(totalHours);
       return (totalHours);
     },
+    // Search through timeSlots to see if the day already has an entry
     checkDuplicate: function(day) {
       for (var i = 0; i < this.timeSlots.length; i++) {
         if (day === this.timeSlots[i].day) {
