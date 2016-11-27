@@ -28,6 +28,7 @@ var timeListApp = new Vue({
       { text: 'Saturday' },
       { text: 'Sunday' },
     ],
+    grandTotal: 0,
   },
 
   firebase: {
@@ -54,12 +55,20 @@ var timeListApp = new Vue({
         }
       );
     },
+    calculateGrandTotal: function() {
+      var total = 0;
+      for (var i = 0; i < this.timeSlots.length; i++) {
+        total += this.timeSlots[i].totalHours;
+      }
+      //console.log(total);
+      this.grandTotal = total;
+      return total;
+    },
   },
 
   methods: {
     // Append time entry to array
     addTimeSlot: function() {
-      console.log(this.timeSlots.length);
       if (this.isValid) {
         this.calcTimeDiff();
         timeRef.push(this.time);

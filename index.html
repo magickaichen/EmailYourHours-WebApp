@@ -10,8 +10,20 @@
   <script src="https://unpkg.com/vue/dist/vue.js"></script>
   <!-- VueFire Support -->
   <script src="https://unpkg.com/vuefire/dist/vuefire.js"></script>
+  <!-- SMTP Email Sender Support -->
+  <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
+  <script type="text/javascript">
+     (function(){
+        emailjs.init("user_09v6fyX4yXXmIrh5FqYob");
+     })();
+  </script>
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css" integrity="sha384-AysaV+vQoT3kOAXZkl02PThvDr8HYKPZhNT5h/CXfBThSRXQ6jW5DO2ekP5ViFdi" crossorigin="anonymous">
+  <!-- Animate.css -->
+  <link href="https://unpkg.com/animate.css@3.5.1/animate.min.css" rel="stylesheet" type="text/css">
+  <!-- App CSS styles-->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/el-animation.css">
 </head>
 
 <body>
@@ -31,70 +43,125 @@
   </ul>
 </nav>
 
-<div id="timeListApp" class="container">
-  <h1 class="display-3">Log Your Hours</h1>
-  <hr class="my-1">
-  <form class="form-inline" action="index.html" method="post">
-    <div class="form-group" :class="{'has-danger': !validation.day || !validation.validDay}">
-      <label class="form-control-label" for="Date" class="lead"><b>Date</b></label>
-      <select v-model="time.day" class="form-control lead" name="weekdays">
-        <option v-for="weekday in weekdays" class="lead">
-          {{ weekday.text }}
-        </option>
-      </select>
-      <div class="form-control-feedback" v-show="!validation.day">
-        Select a day.
+<div id="timeListApp">
+  <div class="jumbotron jumbotron-fluid">
+    <h1 id="header" class="display-3">Log Your Hours</h1>
+    <hr class="my-3">
+    <h2 id="timeHeader">Total Work Time: {{ calculateGrandTotal }}Hours</h2>
+  </div>
+  <div class="container">
+    <form class="form-inline" action="index.html" method="post">
+      <div class="form-group" :class="{'has-danger': !validation.day || !validation.validDay}">
+        <label class="form-control-label" for="Date" class="lead"><b>Date</b></label>
+        <select v-model="time.day" class="form-control lead" name="weekdays">
+          <option v-for="weekday in weekdays" class="lead">
+            {{ weekday.text }}
+          </option>
+        </select>
+        <transition-group name="fade">
+          <div class="form-control-feedback" v-show="!validation.day" key="nullObj">
+            Select a day.
+          </div>
+          <div class="form-control-feedback" v-show="!validation.validDay" key="invalidObj">
+            Selected day already has an entry.
+          </div>
+        </transition-group>
       </div>
-      <div class="form-control-feedback" v-show="!validation.validDay">
-        Selected day already has an entry.
+    </form>
+    <br>
+    <div class="row">
+      <div class="form-group col-sm-6" :class="{'has-danger': !validation.startTime}">
+        <label class="form-control-label" for="startTime"><b>Start</b></label>
+        <input v-model="time.startTime" type="time" class="form-control lead" name="Start Time">
+        <transition name="fade">
+          <div class="form-control-feedback" v-show="!validation.startTime">
+            Enter a valid time.
+          </div>
+        </transition>
+
+      </div>
+      <div class="form-group col-sm-6" :class="{'has-danger': !validation.endTime}">
+        <label class="form-control-label" for="endTime"><b>End</b></label>
+        <input v-model="time.endTime" type="time" class="form-control lead" name="End Time">
+        <transition name="fade">
+          <div class="form-control-feedback" v-show="!validation.endTime">
+            Enter a valid time.
+          </div>
+        </transition>
       </div>
     </div>
-  </form>
-  <br>
-  <div class="row">
-    <div class="form-group col-sm-6" :class="{'has-danger': !validation.startTime}">
-      <label class="form-control-label" for="startTime"><b>Start</b></label>
-      <input v-model="time.startTime" type="time" class="form-control lead" name="Start Time">
-      <div class="form-control-feedback" v-show="!validation.startTime">
-        Enter a valid time.
+    <button v-on:click="addTimeSlot" type="submit" name="submitButton" class="btn btn-success">
+      Log Hours
+    </button>
+    <br><br>
+    <transition name="fade">
+      <div id="timeTable" v-if="timeSlots.length > 0" class="table-responsive">
+        <table class="table table-striped">
+          <thead class="thead-inverse">
+            <tr>
+              <th>Day</th>
+              <th>Start Time</th>
+              <th>End Time</th>
+              <th>Total Work Time</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="timeSlot in timeSlots">
+              <th scope="row">{{timeSlot.day}}</th>
+              <td>{{timeSlot.startTime}}</td>
+              <td>{{timeSlot.endTime}}</td>
+              <td>{{timeSlot.totalHours}} Hours</td>
+              <td>
+                <button v-on:click="deleteTimeSlot(timeSlot)" type="button"
+                name="delete" class="btn btn-danger btn-sm">
+                  Delete
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-    </div>
-    <div class="form-group col-sm-6" :class="{'has-danger': !validation.endTime}">
-      <label class="form-control-label" for="endTime"><b>End</b></label>
-      <input v-model="time.endTime" type="time" class="form-control lead" name="End Time">
-      <div class="form-control-feedback" v-show="!validation.endTime">
-        Enter a valid time.
+    </transition>
+    <!-- Modal -->
+    <button type="button" name="sendEmail" data-toggle="modal" data-target="#confirmModal"
+     class="btn btn-primary" onclick="generateMsg()">
+      Send Email
+    </button>
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog"
+    aria-labelledby="confirmModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" onclick="clearMsg()" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="confirmModalLabel">Check Your Time Log</h4>
+          </div>
+          <div id="emailBody" class="modal-body">
+            Retriving email body, please stand by...
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="clearMsg()">Discard</button>
+            <button type="button" class="btn btn-primary" onclick="sendEmail()">Confirm Send</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-  <button v-on:click="addTimeSlot" type="submit" name="submitButton" class="btn btn-success">
-    Log Hours
-  </button>
-  <br><br>
-  <table class="table table-striped">
-    <thead class="thead-inverse">
-      <tr>
-        <th>Day</th>
-        <th>Start Time</th>
-        <th>End Time</th>
-        <th>Total Work Time</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="timeSlot in timeSlots">
-        <th scope="row">{{timeSlot.day}}</th>
-        <td>{{timeSlot.startTime}}</td>
-        <td>{{timeSlot.endTime}}</td>
-        <td>{{timeSlot.totalHours}} Hours</td>
-        <td><button v-on:click="deleteTimeSlot(timeSlot)" type="button" name="delete" class="btn btn-danger btn-sm">Detele</button></td>
-      </tr>
-    </tbody>
-  </table>
 </div>
+
+<footer class="footer">
+  <div class="container">
+    <p class="text-muted">
+      Developed by <b><a href="https://github.com/magickaichen">@magickaichen</a></b> Mike Xiao
+    </p>
+  </div>
+</footer>
 
 <!-- App JavaScript -->
 <script src="js/main.js"></script>
+<script src="js/emailsender.js"></script>
 <!-- JQuery Support -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" integrity="sha384-3ceskX3iaEnIogmQchP8opvBy3Mi7Ce34nWjpBIwVTHfGYWQS9jwHDVRnpKKHJg7" crossorigin="anonymous"></script>
 <!-- Bootstrap Main JavaScript Support -->
