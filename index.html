@@ -10,15 +10,10 @@
   <script src="https://unpkg.com/vue/dist/vue.js"></script>
   <!-- VueFire Support -->
   <script src="https://unpkg.com/vuefire/dist/vuefire.js"></script>
-  <!-- SMTP Email Sender Support -->
-  <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
-  <script type="text/javascript">
-     (function(){
-        emailjs.init("user_09v6fyX4yXXmIrh5FqYob");
-     })();
-  </script>
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css" integrity="sha384-AysaV+vQoT3kOAXZkl02PThvDr8HYKPZhNT5h/CXfBThSRXQ6jW5DO2ekP5ViFdi" crossorigin="anonymous">
+  <!-- Tweenjs animation support -->
+  <script src="https://unpkg.com/tween.js@16.3.4"></script>
   <!-- Animate.css -->
   <link href="https://unpkg.com/animate.css@3.5.1/animate.min.css" rel="stylesheet" type="text/css">
   <!-- App CSS styles-->
@@ -47,7 +42,9 @@
   <div class="jumbotron jumbotron-fluid">
     <h1 id="header" class="display-3">Log Your Hours</h1>
     <hr class="my-3">
-    <h2 id="timeHeader">Total Work Time: {{ calculateGrandTotal }}Hours</h2>
+    <div :id="calculateGrandTotal">
+      <h2 id="timeHeader">Total Work Time: {{ grandTotal }} Hours</h2>
+    </div>
   </div>
   <div class="container">
     <form class="form-inline" action="index.html" method="post">
@@ -124,10 +121,12 @@
       </div>
     </transition>
     <!-- Modal -->
-    <button type="button" name="sendEmail" data-toggle="modal" data-target="#confirmModal"
-     class="btn btn-primary" onclick="generateMsg()">
-      Send Email
-    </button>
+    <transition name="fade">
+      <button type="button" name="sendEmail" data-toggle="modal" data-target="#confirmModal"
+       class="btn btn-primary" onclick="generateMsg()"v-if="timeSlots.length > 0">
+        Send Email
+      </button>
+    </transition>
     <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog"
     aria-labelledby="confirmModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">

@@ -61,8 +61,27 @@ var timeListApp = new Vue({
         total += this.timeSlots[i].totalHours;
       }
       //console.log(total);
-      this.grandTotal = total;
+      //this.grandTotal = total;
       return total;
+    },
+  },
+
+  watch: {
+    'calculateGrandTotal': function(newValue, oldValue) {
+      console.log('new: %s, old: %s', newValue, oldValue);
+      var vm = this;
+      function animate(time) {
+        requestAnimationFrame(animate)
+        TWEEN.update(time)
+      }
+      new TWEEN.Tween({ tweeningNumber: oldValue })
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .to({ tweeningNumber: newValue }, 500)
+        .onUpdate(function () {
+          vm.grandTotal = +this.tweeningNumber.toFixed(1)
+        })
+        .start()
+      animate()
     },
   },
 
