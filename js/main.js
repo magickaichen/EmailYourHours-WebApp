@@ -76,7 +76,7 @@ var timeListApp = new Vue({
       }
       new TWEEN.Tween({ tweeningNumber: oldValue })
         .easing(TWEEN.Easing.Quadratic.Out)
-        .to({ tweeningNumber: newValue }, 500)
+        .to({ tweeningNumber: newValue }, 750)
         .onUpdate(function () {
           vm.grandTotal = +this.tweeningNumber.toFixed(1)
         })

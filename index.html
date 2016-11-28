@@ -123,13 +123,13 @@
     <!-- Modal -->
     <transition name="fade">
       <button type="button" name="sendEmail" data-toggle="modal" data-target="#confirmModal"
-       class="btn btn-primary" onclick="generateMsg()"v-if="timeSlots.length > 0">
+       class="btn btn-primary" onclick="previewLog()"v-if="timeSlots.length > 0">
         Send Email
       </button>
     </transition>
     <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog"
     aria-labelledby="confirmModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
+      <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" onclick="clearMsg()" aria-label="Close">
@@ -137,8 +137,36 @@
             </button>
             <h4 class="modal-title" id="confirmModalLabel">Check Your Time Log</h4>
           </div>
-          <div id="emailBody" class="modal-body">
-            Retriving email body, please stand by...
+          <div class="modal-body">
+            <div class="row">
+              <div class="form-group col-sm-12">
+                <label for="self-name" class="form-control-label"><b>Your Name</b></label>
+                <input type="text" class="form-control" id="self-name">
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group col-sm-6">
+                <label for="recipient-addr" class="form-control-label"><b>To:</b></label>
+                <input type="text" class="form-control" id="recipient-addr">
+              </div>
+              <div class="form-group col-sm-6">
+                <label for="recipient-name" class="form-control-label"><b>Name</b></label>
+                <input type="text" class="form-control" id="recipient-name">
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group col-sm-6">
+                <label for="cc-addr" class="form-control-label"><b>Cc:</b></label>
+                <input type="text" class="form-control" id="cc-addr">
+              </div>
+              <div class="form-group col-sm-6">
+                <label for="cc-name" class="form-control-label"><b>Name</b></label>
+                <input type="text" class="form-control" id="cc-name">
+              </div>
+            </div>
+            <div id="emailBody">
+              Retriving email body, please stand by...
+            </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="clearMsg()">Discard</button>
