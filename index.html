@@ -69,7 +69,7 @@
     <div class="row">
       <div class="form-group col-sm-6" :class="{'has-danger': !validation.startTime}">
         <label class="form-control-label" for="startTime"><b>Start</b></label>
-        <input v-model="time.startTime" type="time" class="form-control lead" name="Start Time">
+        <input v-model="time.startTime" v-on:keyup.enter="addTimeSlot" type="time" class="form-control lead" name="Start Time">
         <transition name="fade">
           <div class="form-control-feedback" v-show="!validation.startTime">
             Enter a valid time.
@@ -79,7 +79,7 @@
       </div>
       <div class="form-group col-sm-6" :class="{'has-danger': !validation.endTime}">
         <label class="form-control-label" for="endTime"><b>End</b></label>
-        <input v-model="time.endTime" type="time" class="form-control lead" name="End Time">
+        <input v-model="time.endTime" v-on:keyup.enter="addTimeSlot" type="time" class="form-control lead" name="End Time">
         <transition name="fade">
           <div class="form-control-feedback" v-show="!validation.endTime">
             Enter a valid time.
